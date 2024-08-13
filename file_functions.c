@@ -3,10 +3,13 @@
 
 void copy(const char *dest, const char *src)
 {
-    FILE *f1 = fopen(src, "r");
-    FILE *f2 = fopen(dest, "w");
+    FILE *f1 = fopen(src, "rb");
+    FILE *f2 = fopen(dest, "wb");
     if (f1 == NULL || f2 == NULL)
     {
+        perror("Opening error");
+        if (f1 != NULL) fclose(f1);
+        if (f2 != NULL) fclose(f2);
         return;
     }
     int buf;
@@ -20,12 +23,16 @@ void copy(const char *dest, const char *src)
 
 void fcat(const char *res, const char *dest, const char *src)
 {
-    FILE *f1 = fopen(src, "r");
-    FILE *f2 = fopen(dest, "r");
-    FILE *f3 = fopen(res, "w");
+    FILE *f1 = fopen(src, "rb");
+    FILE *f2 = fopen(dest, "rb");
+    FILE *f3 = fopen(res, "wb");
     int buf;
     if (f1 == NULL || f2 == NULL || f3 == NULL)
     {
+        perror("Opening error");
+        if (f1 != NULL) fclose(f1);
+        if (f2 != NULL) fclose(f2);
+        if (f3 != NULL) fclose(f3);
         return;
     }
     while ((buf = fgetc(f2)) != EOF)
@@ -43,21 +50,30 @@ void fcat(const char *res, const char *dest, const char *src)
 
 bool eq(const char *fname1, const char *fname2)
 {
-    FILE *f1 = fopen(fname1, "r");
-    FILE *f2 = fopen(fname2, "r");
+    bool res = true;
+    FILE *f1 = fopen(fname1, "rb");
+    FILE *f2 = fopen(fname2, "rb");
+    if (f1 == NULL || f2 == NULL)
+    {
+        perror("Opening error");
+        if (f1 != NULL) fclose(f1);
+        if (f2 != NULL) fclose(f2);
+        return false;
+    }
     int buf1, buf2;
-    while ((buf1 = fgetc(f1)) != EOF & (buf2 = fgetc(f2)) != EOF)
+    while ((buf1 = fgetc(f1)) != EOF && (buf2 = fgetc(f2)) != EOF)
     {
         if (buf1 != buf2)
         {
-            return false;
+            res = false;
+            break;
         }
     }
     if (buf1 != EOF || buf2 != EOF)
     {
-        return false;
+        res = false;
     }
-    return true;
+    fclose(f1);
+    fclose(f2);
+    return res;
 }
-
-
