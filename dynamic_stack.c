@@ -74,4 +74,15 @@ void destroy(STACK *s)
     s->size = 0;
 }
 
-
+void reverse(STACK *s)
+{
+    STACK temp;
+    create(&temp);
+    while (!empty(s))
+    {
+        T t = top(s);
+        pop(s);
+        push(&temp, t);
+    }
+    *s = temp;
+}
