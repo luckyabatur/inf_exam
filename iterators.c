@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 typedef int T;
 
 typedef struct item
@@ -32,4 +34,14 @@ T fetch(ITERATOR *i)
 void store(ITERATOR *i, T t)
 {
     i->node->data = t;
+}
+
+bool equal(ITERATOR *a, ITERATOR *b)
+{
+    return a->node == b->node;
+}
+
+bool notequal(ITERATOR *a, ITERATOR *b)
+{
+    return a->node != b->node;
 }
